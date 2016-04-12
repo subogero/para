@@ -15,12 +15,16 @@ my $p = Para->new(
 );
 $p->to_queue(0..9);
 $p->run;
-print for @{$p->{results}};
+
+undef $p->{callback};
+$p->to_queue('A'..'Z');
+$p->run;
+print $p->results;
 
 sub job {
     $p->debug("job running $_[0]");
     sleep 1;
-    print $_[0] x 2048, "\n";
+    print $_[0] x 100, "\n";
     $p->debug("job exiting $_[0]");
     0;
 }

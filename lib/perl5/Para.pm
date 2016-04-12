@@ -45,6 +45,15 @@ sub run {
     }
 }
 
+sub results {
+    my $p = shift;
+    my $n = shift;
+    my $size = @{$p->{results}};
+    $n = $size if !$n || $n > $size || $n < 0;
+    my @res = splice @{$p->{results}}, 0, $n;
+    return @res;
+}
+
 sub start_jobs {
     my $p = shift;
     while (@{$p->{queue}} && keys $p->{kids} < $p->{jobs}) {
