@@ -1,0 +1,26 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use Time::HiRes qw(time sleep);
+
+use FindBin;
+use lib "$FindBin::Bin/../lib/perl5";
+use Para;
+
+my $p = Para->new(
+    job => \&job,
+    jobs => 10,
+    callback => sub { print shift },
+    debug => 0,
+);
+$p->to_queue(0..9);
+$p->run;
+print for @{$p->{results}};
+
+sub job {
+    $p->debug("job running $_[0]");
+    sleep 1;
+    print $_[0] x 2048, "\n";
+    $p->debug("job exiting $_[0]");
+    0;
+}
