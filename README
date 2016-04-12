@@ -1,0 +1,37 @@
+Para(3) -- Perl lib to run parallel jobs
+========================================
+
+## SYNOPSIS
+
+ use Para;
+ my $p = Para->new(
+     job => sub { sleep 1; print $_[0] x 10 . "\n" },
+     callback => sub { print shift },
+     jobs => 10,
+ );
+ $p->to_queue(0..9);
+ $p->run;
+
+## DESCRIPTION
+
+Above example shall run in about 1s time.
+
+Pass a job as a code reference. Sub shall take a single parameter
+and print one output to STDOUT, and optionally indicate an exit status
+with a return value.
+
+Optional parameters to new:
+
+* callback: if missing, get results using $p->results
+* size: max output size of job in bytes, default 4096
+* jobs: max number of parallel jobs, default 1
+
+Pass list of job inputs to to_queue().
+
+Call run() to process jobs, it will call callback for each result, otherwise
+use $p->results afterwards.
+
+## INTERNALS
+
+Para forks a process for each job, gets results from them via single
+Unix domain socket in SOCK_SEQPACKET mode, guaranteeing message integrity.
